@@ -44,6 +44,7 @@ export const FeedbackProvider = ({ children }) => {
             item: item,
             edit: true
         })
+        console.log("Edit feedback", item)
     }
 
     const updateFeedback = (id, updItem) => {
