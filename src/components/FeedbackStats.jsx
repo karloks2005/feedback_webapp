@@ -1,4 +1,8 @@
-function FeedbackStats({ feedback }){
+import { useContext } from "react";
+import FeedbackContext from "../context/FeedbackContext";
+
+function FeedbackStats(){
+    const { feedback } = useContext(FeedbackContext);
     //Calculate average rating
     //Loopa kroz sve elemente i zbraja ratinge
     const totalRating = feedback.reduce((acc, item) => acc + item.rating, 0)

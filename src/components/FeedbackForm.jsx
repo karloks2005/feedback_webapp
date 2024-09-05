@@ -1,19 +1,32 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
+
 import Card from './shared/Card';
 import Button from './shared/Button';
 import RatingSelect from './RatingSelect';
+import FeedbackContext from '../context/FeedbackContext';
 
-function FeedbackForm ({ handleAdd }) {
+function FeedbackForm () {
     const [text, setText] = useState('');
     const [btnDisabled, setBtnDisabled] = useState(true);
     const [message, setMessage] = useState('');
     const [rating, setRating] = useState(10);
+
+    const { addFeedback, feedbackEdit, updateFeedback } = useContext(FeedbackContext);
+
+    useEffect(() => {
+        //Radi kao init state u flutteru, na pocetku loadanja i samo jednom
+        if(feedbackEdit.edit){
+            setBtnDisabled(false)
+            setText(feedbackEdit.item.text)
+            setRating(feedbackEdit.item.rating)
+        }
+    }, [feedbackEdit])
     
     const handleTextChange = (e) => {
-        if(text == ''){
+        if(text === ''){
             setBtnDisabled(true);
             setMessage(null);
-        } else if (text != '' && text.length <= 10){
+        } else if (text !== '' && text.length <= 10){
             setMessage('Text must be at least 10 characters long');
             setBtnDisabled(true);
         } else {
@@ -23,9 +36,6 @@ function FeedbackForm ({ handleAdd }) {
         setText(e.target.value);
     }
 
-    const handleSelect = (e) => {
-        setRating(e.target.value);
-    }
 
     const handleSubmit = (e) => {
         e.preventDefault(); //Sprjecava da se writea u file
@@ -38,8 +48,13 @@ function FeedbackForm ({ handleAdd }) {
             text,
             rating
         }
-        handleAdd(newFeedback)
-        setText('')
+
+        if(feedbackEdit.edit){
+            updateFeedback(feedbackEdit.item.id, newFeedback)
+        } else {
+            addFeedback(newFeedback)
+        }
+    
     }
 
     return <Card>
